@@ -1,5 +1,6 @@
 package recfun
 import common._
+import balance._
 
 object Main {
   def main(args: Array[String]) {
@@ -22,7 +23,7 @@ object Main {
   /**
    * Exercise 2
    */
-  def balance(chars: List[Char]): Boolean = ???
+  def balance(chars: List[Char]): Boolean = b(chars, 0, 0)
 
   /**
    * Exercise 3
