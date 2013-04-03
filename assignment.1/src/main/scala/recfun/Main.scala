@@ -31,6 +31,7 @@ object Main {
   def countChange(money: Int, coins: List[Int]): Int = {
     val orderedDescending = coins.sortWith((_ > _))
     println(orderedDescending)
-    0
+    if(money == 0) 1
+    else 0
   }
 }
