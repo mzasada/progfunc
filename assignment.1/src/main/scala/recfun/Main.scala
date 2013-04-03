@@ -1,6 +1,6 @@
 package recfun
-import common._
-import balance._
+
+import balance.b
 
 object Main {
   def main(args: Array[String]) {
@@ -28,5 +28,9 @@ object Main {
   /**
    * Exercise 3
    */
-  def countChange(money: Int, coins: List[Int]): Int = ???
+  def countChange(money: Int, coins: List[Int]): Int = {
+    val orderedDescending = coins.sortWith((_ > _))
+    println(orderedDescending)
+    0
+  }
 }
