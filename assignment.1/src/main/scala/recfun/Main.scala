@@ -29,9 +29,9 @@ object Main {
    * Exercise 3
    */
   def countChange(money: Int, coins: List[Int]): Int = {
-    val orderedDescending = coins.sortWith((_ > _))
-    println(orderedDescending)
-    if(money == 0) 1
-    else 0
+    if (money == 0) 1
+    else if (money < 0 || coins.isEmpty) 0
+    else
+      countChange(money - coins.head, coins) + countChange(money, coins.tail)
   }
 }
