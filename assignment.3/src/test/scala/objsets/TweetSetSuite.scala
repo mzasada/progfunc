@@ -31,12 +31,12 @@ class TweetSetSuite extends FunSuite {
 
     val listOfTweetSets = new ArrayList[TweetSet]
     listOfTweetSets.add(asTweetSet(gizmodoTweets, new Empty))
-//    listOfTweetSets.add(asTweetSet(techCrunchTweets, new Empty))
-//    listOfTweetSets.add(asTweetSet(engadgetTweets, new Empty))
-//    listOfTweetSets.add(asTweetSet(amazondealsTweets, new Empty))
-//    listOfTweetSets.add(asTweetSet(cnetTweets, new Empty))
-//    listOfTweetSets.add(asTweetSet(gadgetlabTweets, new Empty))
-//    listOfTweetSets.add(asTweetSet(mashableTweets, new Empty))
+    //    listOfTweetSets.add(asTweetSet(techCrunchTweets, new Empty))
+    //    listOfTweetSets.add(asTweetSet(engadgetTweets, new Empty))
+    //    listOfTweetSets.add(asTweetSet(amazondealsTweets, new Empty))
+    //    listOfTweetSets.add(asTweetSet(cnetTweets, new Empty))
+    //    listOfTweetSets.add(asTweetSet(gadgetlabTweets, new Empty))
+    //    listOfTweetSets.add(asTweetSet(mashableTweets, new Empty))
 
     val allTweetsSet = union(listOfTweetSets.toList, new Empty)
 
@@ -48,6 +48,11 @@ class TweetSetSuite extends FunSuite {
     def union(sets: List[TweetSet], acc: TweetSet): TweetSet = {
       if (sets.isEmpty) acc
       else union(sets.tail, acc union (sets.head))
+    }
+
+    def tweetListSize(list: TweetList, s: Int): Int = {
+      if (list.isEmpty) s
+      else tweetListSize(list.tail, s + 1)
     }
   }
 
@@ -103,12 +108,29 @@ class TweetSetSuite extends FunSuite {
     }
   }
 
-  test("find apple tweets") {
+  test("tweet with 321 retweets") {
+    new GoogleAndAppleTweets {
+      assert(size(allTweetsSet.filter(tw => tw.retweets == 321)) === 1)
+    }
+  }
+  
+  test("filter and union: tweets with 321 and 205 retweets") {
+    new GoogleAndAppleTweets {
+      assert(size(allTweetsSet.filter(tw => tw.retweets == 321) union allTweetsSet.filter(tw => tw.retweets == 205)) === 1)
+    }
+  }
+
+  test("find trending") {
     new GoogleAndAppleTweets {
       val appleTweets = GoogleVsApple.getTweetsWithKeywords(allTweetsSet, GoogleVsApple.apple)
       val googleTweets = GoogleVsApple.getTweetsWithKeywords(allTweetsSet, GoogleVsApple.google)
       println("apple: " + size(appleTweets))
       println("google: " + size(googleTweets))
+      val trending = GoogleVsApple.getTweetsOrderedByRetweetedCount(googleTweets, appleTweets)
+      val trendingSize = tweetListSize(trending, 0)
+      println(trendingSize)
+      trending.foreach(println)
+      assert(size(appleTweets union googleTweets) === trendingSize)
     }
   }
 }
