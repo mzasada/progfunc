@@ -1,9 +1,11 @@
 package objsets
 
 import org.scalatest.FunSuite
-
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
+import java.util.HashSet
+import java.util.ArrayList
+import scala.collection.JavaConversions._
 
 @RunWith(classOf[JUnitRunner])
 class TweetSetSuite extends FunSuite {
@@ -16,6 +18,37 @@ class TweetSetSuite extends FunSuite {
     val set4c = set3.incl(c)
     val set4d = set3.incl(d)
     val set5 = set4c.incl(d)
+  }
+
+  trait GoogleAndAppleTweets {
+    private val gizmodoTweets = TweetReader.ParseTweets.getTweetData("gizmodo", TweetData.gizmodo)
+    private val techCrunchTweets = TweetReader.ParseTweets.getTweetData("TechCrunch", TweetData.TechCrunch)
+    private val engadgetTweets = TweetReader.ParseTweets.getTweetData("engadget", TweetData.engadget)
+    private val amazondealsTweets = TweetReader.ParseTweets.getTweetData("amazondeals", TweetData.amazondeals)
+    private val cnetTweets = TweetReader.ParseTweets.getTweetData("CNET", TweetData.CNET)
+    private val gadgetlabTweets = TweetReader.ParseTweets.getTweetData("gadgetlab", TweetData.gadgetlab)
+    private val mashableTweets = TweetReader.ParseTweets.getTweetData("mashable", TweetData.mashable)
+
+    val listOfTweetSets = new ArrayList[TweetSet]
+    listOfTweetSets.add(asTweetSet(gizmodoTweets, new Empty))
+//    listOfTweetSets.add(asTweetSet(techCrunchTweets, new Empty))
+//    listOfTweetSets.add(asTweetSet(engadgetTweets, new Empty))
+//    listOfTweetSets.add(asTweetSet(amazondealsTweets, new Empty))
+//    listOfTweetSets.add(asTweetSet(cnetTweets, new Empty))
+//    listOfTweetSets.add(asTweetSet(gadgetlabTweets, new Empty))
+//    listOfTweetSets.add(asTweetSet(mashableTweets, new Empty))
+
+    val allTweetsSet = union(listOfTweetSets.toList, new Empty)
+
+    def asTweetSet(tweets: List[Tweet], acc: TweetSet): TweetSet = {
+      if (tweets.isEmpty) acc
+      else asTweetSet(tweets.tail, acc incl tweets.head)
+    }
+
+    def union(sets: List[TweetSet], acc: TweetSet): TweetSet = {
+      if (sets.isEmpty) acc
+      else union(sets.tail, acc union (sets.head))
+    }
   }
 
   def asSet(tweets: TweetSet): Set[Tweet] = {
@@ -67,6 +100,15 @@ class TweetSetSuite extends FunSuite {
       val trends = set5.descendingByRetweet
       assert(!trends.isEmpty)
       assert(trends.head.user == "a" || trends.head.user == "b")
+    }
+  }
+
+  test("find apple tweets") {
+    new GoogleAndAppleTweets {
+      val appleTweets = GoogleVsApple.getTweetsWithKeywords(allTweetsSet, GoogleVsApple.apple)
+      val googleTweets = GoogleVsApple.getTweetsWithKeywords(allTweetsSet, GoogleVsApple.google)
+      println("apple: " + size(appleTweets))
+      println("google: " + size(googleTweets))
     }
   }
 }
