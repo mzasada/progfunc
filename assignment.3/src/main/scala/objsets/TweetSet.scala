@@ -141,7 +141,7 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
   }
 
   def union(that: TweetSet): TweetSet = {
-    (left union right) union that incl elem
+    filterAcc(tw => true, that)
   }
 
   def mostRetweeted: Tweet = mostRetweeted(elem)
