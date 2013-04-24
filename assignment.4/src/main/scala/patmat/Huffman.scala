@@ -83,9 +83,11 @@ object Huffman {
   }
 
   def incrementCharCount(char: Char, old: List[(Char, Int)], acc: List[(Char, Int)]): List[(Char, Int)] = {
-    if (old.isEmpty) (char, 1) :: acc
-    else if (old.head._1 == char) acc ::: (char, old.head._2 + 1) :: old.tail
-    else incrementCharCount(char, old.tail, old.head :: acc)
+    old match {
+      case List() => (char, 1) :: acc
+      case (c, count) :: tail if c == char => acc ::: (c, count + 1) :: tail
+      case head :: tail => incrementCharCount(char, tail, head :: acc)
+    }
   }
 
   /**
