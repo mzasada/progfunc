@@ -133,8 +133,16 @@ object Huffman {
    */
   def combine(trees: List[CodeTree]): List[CodeTree] = {
     trees match {
-      case first :: second :: rest => List(makeCodeTree(first, second)) ::: rest
+      case first :: second :: rest => insertCodeTreeWithAscendingOrder(makeCodeTree(first, second), rest, List())
       case _ => trees
+    }
+  }
+
+  def insertCodeTreeWithAscendingOrder(elem: CodeTree, greater: List[CodeTree], smaller: List[CodeTree]): List[CodeTree] = {
+    greater match {
+      case List() => smaller ::: List(elem)
+      case head :: tail if weight(head) > weight(elem) => smaller ::: List(elem) ::: greater
+      case head :: tail => insertCodeTreeWithAscendingOrder(elem, tail, smaller ::: List(head))
     }
   }
 
