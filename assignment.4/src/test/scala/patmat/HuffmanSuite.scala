@@ -59,11 +59,39 @@ class HuffmanSuite extends FunSuite {
 
   test("decode and encode a very short text should be identity") {
     new TestTrees {
-      assert(decode(t1, encode(t1)("ab".toList)) === "ab".toList)
+      assert(decode(t1, encode(t1)("abaaabaab".toList)) === "abaaabaab".toList)
+    }
+  }
+
+  test("decoded secret") {
+    assert(decodedSecret === List('h', 'u', 'f', 'f', 'm', 'a', 'n', 'e', 's', 't', 'c', 'o', 'o', 'l'))
+  }
+
+  test("code bits") {
+    val table = List(('a', List(0, 0, 0)), ('b', List(0, 1, 1)), ('c', List(0, 0, 1)))
+    assert(codeBits(table)('a') == List(0, 0, 0))
+    assert(codeBits(table)('b') == List(0, 1, 1))
+    assert(codeBits(table)('c') == List(0, 0, 1))
+  }
+
+  test("convert") {
+    new TestTrees {
+      val table = convert(t2)
+      assert(codeBits(table)('a') == List(0, 0))
+      assert(codeBits(table)('b') == List(0, 1))
+      assert(codeBits(table)('d') == List(1))
+    }
+  }
+
+  test("decode and quick encode a text with t1 should be identity") {
+    new TestTrees {
+      assert(decode(t1, quickEncode(t1)("abaaabaab".toList)) === "abaaabaab".toList)
     }
   }
   
-  test("decoded secret") {
-    println(decodedSecret)
+  test("decode and quick encode a text with t2 should be identity") {
+    new TestTrees {
+      assert(decode(t2, quickEncode(t2)("abdddaadabadab".toList)) === "abdddaadabadab".toList)
+    }
   }
 }
