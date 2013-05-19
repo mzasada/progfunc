@@ -56,9 +56,10 @@ trait StringParserTerrain extends GameDef {
     def isInside(pos: Pos): Boolean = {
       if (pos.row >= 0 && pos.row < levelVector.length) {
         val row = levelVector(pos.row)
-        return pos.col >= 0 && pos.col < row.length && '-' != row(pos.col)
+        pos.col >= 0 && pos.col < row.length && '-' != row(pos.col)
+      } else {
+        false
       }
-      return false
     }
     isInside
   }
@@ -72,9 +73,9 @@ trait StringParserTerrain extends GameDef {
    * `Vector` class
    */
   def findChar(c: Char, levelVector: Vector[Vector[Char]]): Pos = {
-    for (row <- levelVector zip (0 to levelVector.length) if row._1.indexWhere(_ == c) > 0)
-      return new Pos(row._2, row._1.indexOf(c));
-    return null
+    val result = levelVector zip (0 to levelVector.length) filter (pair => pair._1.indexWhere(_ == c) > 0)
+    val (vector, row) = result.head
+    new Pos(row, vector.indexOf(c));
   }
 
   private lazy val vector: Vector[Vector[Char]] =
