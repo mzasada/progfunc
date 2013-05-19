@@ -54,9 +54,36 @@ class BloxorzSuite extends FunSuite {
     }
   }
 
+  test("should return legal neighbors") {
+    new Level1 {
+      val block = Block(Pos(0, 0), Pos(0, 0))
+      assert(block.legalNeighbors == List((Block(Pos(1, 0), Pos(2, 0)), Down), (Block(Pos(0, 1), Pos(0, 2)), Right)))
+    }
+  }
+
   test("findChar level 1") {
     new Level1 {
       assert(startPos == Pos(1, 1))
+    }
+  }
+
+  test("should mark done when goal is reached") {
+    new Level1 {
+      assert(done(Block(goal, goal)) == true)
+    }
+  }
+
+  test("shouldnt mark done when goal isnt reached") {
+    new Level1 {
+      assert(done(Block(startPos, goal)) == false)
+    }
+  }
+
+  test("should return legal neighbors with history") {
+    new Level1 {
+      assert(neighborsWithHistory(Block(Pos(1, 1), Pos(1, 1)), List(Left, Up)).toSet == Set(
+        (Block(Pos(1, 2), Pos(1, 3)), List(Right, Left, Up)),
+        (Block(Pos(2, 1), Pos(3, 1)), List(Down, Left, Up))))
     }
   }
 
